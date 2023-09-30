@@ -1,0 +1,29 @@
+@import '../../style/variables';
+
+.wrapper {
+	display: flex;
+	justify-content: space-between;
+	font-weight: 700;
+	line-height: normal;
+}
+
+.h1 {
+	font-size: 28px;
+	span {
+		color: $main-color;
+	}
+}
+
+.ul {
+	display: flex;
+  justify-content: center;
+  align-items: center;
+	column-gap: 8px;
+	li {
+    transition: all 0.2s ease-in-out;
+		&:hover {
+			color: $main-color;
+			cursor: pointer;
+		}
+	}
+}
