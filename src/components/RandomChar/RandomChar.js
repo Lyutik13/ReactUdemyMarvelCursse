@@ -1,42 +1,93 @@
-import styles from './RandomChar.module.scss'
-import thor from '../../resources/img/thor.jpeg'
-import mjolnir from '../../resources/img/mjolnir.png'
+import React, { Component } from 'react'
 
-function RandomChar() {
-	return (
-		<div className={styles.wrapper}>
-			<div className={styles.character}>
-				<div className={styles.character__img}>
-					<img src={thor} alt="Random character" />
-				</div>
-				<div className={styles.content}>
-					<h3>THOR</h3>
-					<p className="descr">
-						As the Norse God of thunder and lightning, Thor wields one of the
-						greatest weapons ever made, the enchanted hammer Mjolnir. While
-						others have described Thor as an over-muscled, oafish imbecile, he's
-						quite smart and compassionate...
+import styles from './RandomChar.module.scss'
+import mjolnir from '../../resources/img/mjolnir.png'
+import MarvelService from '../../services/MarvelService'
+
+import Spinner from '../Spiner/Spinner'
+import ErrorMessage from '../ErrorMessage/ErrorMessage'
+
+class RandomChar extends Component {
+	constructor(props) {
+		super(props)
+		this.updateChar()
+	}
+
+	state = {
+		char: {},
+		loading: true,
+		error: false,
+	}
+
+	marvelService = new MarvelService()
+
+	onCharLoaded = (char) => {
+		this.setState({ char: char, loading: false })
+	}
+
+	onError = () => {
+		this.setState({ loading: false, error: true })
+	}
+
+	updateChar = () => {
+		const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
+		this.marvelService
+			.getCharacter(id)
+			.then(this.onCharLoaded)
+			.catch(this.onError)
+		// this.marvelService.getAllCharacters().then((res) => console.log(res))
+	}
+
+	render() {
+		const { char, loading, error } = this.state
+    const errorMessage = error ? <ErrorMessage/> : null
+    const spiner = loading ? <Spinner/> : null
+    const content = !(loading || error) ? <View char={char} /> : null
+
+		return (
+			<div className={styles.wrapper}>
+				{/* {loading ? <Spinner /> : <View char={char} />} */}
+        {errorMessage}
+        {spiner}
+        {content}
+				<div className={styles.question}>
+					<p>
+						Random character for today! Do you want to get to know him better?
 					</p>
-					<div className={styles.content__btns}>
-						<a href="#" className="button button__main">
-							<div className="inner">homepage</div>
-						</a>
-						<a href="#" className="button button__secondary">
-							<div className="inner">Wiki</div>
-						</a>
-					</div>
+					<p>Or choose another one</p>
+					<button className="button button__main">
+						<div className="inner">try it</div>
+					</button>
+					<img
+						className={styles.question__decoration}
+						src={mjolnir}
+						alt="mjolnir"
+					/>
 				</div>
 			</div>
+		)
+	}
+}
 
-			<div className={styles.question}>
-				<p>
-					Random character for today! Do you want to get to know him better?
-				</p>
-				<p>Or choose another one</p>
-				<button className="button button__main">
-					<div className="inner">try it</div>
-				</button>
-				<img className={styles.question__decoration} src={mjolnir} alt="mjolnir" />
+const View = ({ char }) => {
+	const { name, description, thumbnail, homepage, wiki } = char
+
+	return (
+		<div className={styles.character}>
+			<div className={styles.character__img}>
+				<img src={thumbnail} alt="Random character" />
+			</div>
+			<div className={styles.content}>
+				<h3>{name}</h3>
+				<p className="descr">{description}</p>
+				<div className={styles.content__btns}>
+					<a href={homepage} className="button button__main">
+						<div className="inner">homepage</div>
+					</a>
+					<a href={wiki} className="button button__secondary">
+						<div className="inner">Wiki</div>
+					</a>
+				</div>
 			</div>
 		</div>
 	)
