@@ -10,21 +10,34 @@ import CharInfo from '../CharInfo/CharInfo'
 
 import decoration from '../../resources/img/vision.png'
 import styles from './App.module.scss'
+import { Component } from 'react'
 
-const App = () => {
-	return (
-		<div className="app">
-			<Header />
-			<main>
-				<RandomChar />
-				<div className={styles.content}>
-					<CharList />
-					<CharInfo />
-				</div>
-				<img className="bg-decoration" src={decoration} alt="vision" />
-			</main>
-		</div>
-	)
+class App extends Component {
+	state = {
+    selectedChar: null
+  }
+
+  onCharSelected = (id) => {
+    this.setState({
+      selectedChar: id
+    })
+  }
+
+	render() {
+		return (
+			<div className="app">
+				<Header />
+				<main>
+					<RandomChar />
+					<div className={styles.content}>
+						<CharList onCharSelected={this.onCharSelected}/>
+						<CharInfo charId={this.state.selectedChar}/>
+					</div>
+					<img className="bg-decoration" src={decoration} alt="vision" />
+				</main>
+			</div>
+		)
+	}
 }
 
 export default App
