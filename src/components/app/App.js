@@ -2,6 +2,7 @@ import Header from '../Header/Header'
 import RandomChar from '../RandomChar/RandomChar'
 import CharList from '../CharList/CharList'
 import CharInfo from '../CharInfo/CharInfo'
+import ErrorBoundary from '../ErrorBoundary/ErrorBoundary'
 
 // import Skeleton from '../Skeleton/Skeleton'
 // import Banner from '../Banner/Banner'
@@ -14,14 +15,14 @@ import { Component } from 'react'
 
 class App extends Component {
 	state = {
-    selectedChar: null
-  }
+		selectedChar: null,
+	}
 
-  onCharSelected = (id) => {
-    this.setState({
-      selectedChar: id
-    })
-  }
+	onCharSelected = (id) => {
+		this.setState({
+			selectedChar: id,
+		})
+	}
 
 	render() {
 		return (
@@ -30,8 +31,12 @@ class App extends Component {
 				<main>
 					<RandomChar />
 					<div className={styles.content}>
-						<CharList onCharSelected={this.onCharSelected}/>
-						<CharInfo charId={this.state.selectedChar}/>
+						<ErrorBoundary>
+							<CharList onCharSelected={this.onCharSelected} />
+						</ErrorBoundary>
+						<ErrorBoundary>
+							<CharInfo charId={this.state.selectedChar} />
+						</ErrorBoundary>
 					</div>
 					<img className="bg-decoration" src={decoration} alt="vision" />
 				</main>
