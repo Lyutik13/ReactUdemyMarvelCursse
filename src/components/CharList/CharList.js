@@ -1,4 +1,4 @@
-import { Component } from 'react'
+import { useState, useEffect } from 'react'
 
 import Spinner from '../Spiner/Spinner'
 import ErrorMessage from '../ErrorMessage/ErrorMessage'
@@ -6,63 +6,53 @@ import MarvelService from '../../services/MarvelService'
 
 import styles from './CharList.module.scss'
 
-class CharList extends Component {
-	state = {
-		charList: [],
-		loading: true,
-		error: false,
-		newItemLoading: false,
-		offset: 210,
-		charEnded: false,
-		visualBtn: false,
+const CharList = (props) => {
+	const [charList, setCharList] = useState([])
+	const [loading, setLoading] = useState(true)
+	const [error, setError] = useState(false)
+	const [newItemLoading, setNewItemLoading] = useState(false)
+	const [offset, setOffset] = useState(210)
+	const [charEnded, setCharEnded] = useState(false)
+	const [visualBtn, setVisualBtn] = useState(false)
+
+	const marvelService = new MarvelService()
+
+	// useEffect(() => {
+	// 	onReques()
+	// }, [])
+
+	const onReques = (offset) => {
+		onCharListLoading()
+		marvelService.getAllCharacters(offset).then(onCharListLoaded).catch(onError)
 	}
 
-	marvelService = new MarvelService()
-
-	componentDidMount() {
-		// this.onReques()
+	const onCharListLoading = () => {
+		setNewItemLoading(true)
 	}
 
-	onReques = (offset) => {
-		this.onCharListLoading()
-		this.marvelService
-			.getAllCharacters(offset)
-			.then(this.onCharListLoaded)
-			.catch(this.onError)
-	}
-
-	onCharListLoading = () => {
-		this.setState({
-			newItemLoading: true,
-		})
-	}
-
-	onCharListLoaded = (newCharList) => {
+	const onCharListLoaded = (newCharList) => {
 		let ended = false
 		if (newCharList.length < 9) {
 			ended = true
 		}
 
-		this.setState(({ offset, charList }) => ({
-			charList: [...charList, ...newCharList],
-			loading: false,
-			newItemLoading: false,
-			offset: offset + 9,
-			charEnded: ended,
-			visualBtn: true,
-		}))
+		setCharList((charList) => [...charList, ...newCharList])
+		setLoading((loading) => false)
+		setNewItemLoading((newItemLoading) => false)
+		setOffset((offset) => offset + 9)
+		setCharEnded((charEnded) => ended)
+		setVisualBtn((visualBtn) => true)
 	}
 
-	onError = () => {
-		this.setState({
-			error: true,
-			loading: false,
-		})
+	const onError = () => {
+		setError(true)
+		setLoading(false)
 	}
+
 
 	// Этот метод создан для оптимизации,
 	// чтобы не помещать такую конструкцию в метод render
-	renderItems(arr) {
+	function renderItems(arr) {
 		const items = arr.map((item) => {
 			let imgStyle = { objectFit: 'cover' }
 			if (
@@ -75,8 +65,11 @@ class CharList extends Component {
 			return (
 				<li
 					className={styles.card}
+					tabIndex={0}
 					key={item.id}
-					onClick={() => this.props.onCharSelected(item.id)}
+					onClick={() => {
+						props.onCharSelected(item.id)
+					}}
 				>
 					<div className={styles.card__img}>
 						<img src={item.thumbnail} alt={item.name} style={imgStyle} />
@@ -89,45 +82,33 @@ class CharList extends Component {
 		return <ul className={styles.cards}>{items}</ul>
 	}
 
-	render() {
-		const {
-			charList,
-			loading,
-			error,
-			offset,
-			newItemLoading,
-			charEnded,
-			visualBtn,
-		} = this.state
+	const items = renderItems(charList)
 
-		const items = this.renderItems(charList)
+	const errorMessage = error ? <ErrorMessage /> : null
+	const spinner = loading ? <Spinner /> : null
+	const content = !(loading || error) ? items : null
 
-		const errorMessage = error ? <ErrorMessage /> : null
-		const spinner = loading ? <Spinner /> : null
-		const content = !(loading || error) ? items : null
-
-		return (
-			<div className="list">
-				{errorMessage}
-				{spinner}
-				{content}
-				<h3
-					className={styles.textBtn}
-					style={{ display: visualBtn ? 'none' : 'block' }}
-				>
-					Click on the button below
-				</h3>
-				<button
-					className="button button__main button__long"
-					disabled={newItemLoading}
-					style={{ display: charEnded ? 'none' : 'block' }}
-					onClick={() => this.onReques(offset)}
-				>
-					<div className="inner">load more</div>
-				</button>
-			</div>
-		)
-	}
+	return (
+		<div className="list">
+			{errorMessage}
+			{spinner}
+			{content}
+			<h3
+				className={styles.textBtn}
+				style={{ display: visualBtn ? 'none' : 'block' }}
+			>
+				Click on the button below
+			</h3>
+			<button
+				className="button button__main button__long"
+				disabled={newItemLoading}
+				style={{ display: charEnded ? 'none' : 'block' }}
+				onClick={() => onReques(offset)}
+			>
+				<div className="inner">load more</div>
+			</button>
+		</div>
+	)
 }
 
 export default CharList
