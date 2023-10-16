@@ -1,33 +1,29 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import Spinner from '../Spiner/Spinner'
 import ErrorMessage from '../ErrorMessage/ErrorMessage'
-import MarvelService from '../../services/MarvelService'
+import useMarvelService from '../../services/MarvelService'
 
 import styles from './CharList.module.scss'
 
 const CharList = (props) => {
 	const [charList, setCharList] = useState([])
-	const [loading, setLoading] = useState(true)
-	const [error, setError] = useState(false)
+	// const [loading, setLoading] = useState(true)
+	// const [error, setError] = useState(false)
 	const [newItemLoading, setNewItemLoading] = useState(false)
 	const [offset, setOffset] = useState(210)
 	const [charEnded, setCharEnded] = useState(false)
 	const [visualBtn, setVisualBtn] = useState(false)
 
-	const marvelService = new MarvelService()
+	const { loading, error, getAllCharacters } = useMarvelService()
 
-	// useEffect(() => {
-	// 	onReques()
-	// }, [])
+	useEffect(() => {
+		// onReques(offset, true)
+	}, [])
 
-	const onReques = (offset) => {
-		onCharListLoading()
-		marvelService.getAllCharacters(offset).then(onCharListLoaded).catch(onError)
-	}
-
-	const onCharListLoading = () => {
-		setNewItemLoading(true)
+	const onReques = (offset, initial) => {
+    initial ? setNewItemLoading(false) : setNewItemLoading(true)
+		getAllCharacters(offset).then(onCharListLoaded)
 	}
 
 	const onCharListLoaded = (newCharList) => {
@@ -37,18 +33,11 @@ const CharList = (props) => {
 		}
 
 		setCharList((charList) => [...charList, ...newCharList])
-		setLoading((loading) => false)
 		setNewItemLoading((newItemLoading) => false)
 		setOffset((offset) => offset + 9)
 		setCharEnded((charEnded) => ended)
 		setVisualBtn((visualBtn) => true)
 	}
-
-	const onError = () => {
-		setError(true)
-		setLoading(false)
-	}
-
 
 	// Этот метод создан для оптимизации,
 	// чтобы не помещать такую конструкцию в метод render
@@ -86,13 +75,12 @@ const CharList = (props) => {
 
 	const errorMessage = error ? <ErrorMessage /> : null
 	const spinner = loading ? <Spinner /> : null
-	const content = !(loading || error) ? items : null
 
 	return (
 		<div className="list">
 			{errorMessage}
 			{spinner}
-			{content}
+			{items}
 			<h3
 				className={styles.textBtn}
 				style={{ display: visualBtn ? 'none' : 'block' }}
