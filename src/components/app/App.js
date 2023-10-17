@@ -1,13 +1,14 @@
 import { useState } from 'react'
+import { BrowserRouter as Router, Routes} from 'react-router-dom'
 
 import Header from '../Header/Header'
 import RandomChar from '../RandomChar/RandomChar'
 import CharList from '../CharList/CharList'
 import CharInfo from '../CharInfo/CharInfo'
 import ErrorBoundary from '../ErrorBoundary/ErrorBoundary'
-// import Skeleton from '../Skeleton/Skeleton'
-// import Banner from '../Banner/Banner'
-// import ComicsList from '../ComicsList/ComicsList'
+
+import Banner from '../Banner/Banner'
+import ComicsList from '../ComicsList/ComicsList'
 // import SingleComic from '../singleComic/SingleComic'
 
 import decoration from '../../resources/img/vision.png'
@@ -24,6 +25,10 @@ const App = () => {
 		<div className="app">
 			<Header />
 			<main>
+
+      <Banner/>
+      <ComicsList/>
+
 				<RandomChar />
 				<div className={styles.content}>
 					<ErrorBoundary>
