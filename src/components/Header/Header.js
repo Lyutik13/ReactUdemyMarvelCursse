@@ -1,3 +1,5 @@
+import { NavLink } from 'react-router-dom'
+
 import styles from './Header.module.scss'
 
 function Header() {
@@ -9,13 +11,17 @@ function Header() {
 				</h1>
 				<nav>
 					<ul className={styles.ul}>
-						<li>
-							<h2>Characters</h2>
-						</li>
+						<NavLink to={'/'} style={({ isActive }) => ({ color: isActive ? '#9F0013' : '' })}>
+							<li>
+								<h2>Characters</h2>
+							</li>
+						</NavLink>
 						/
-						<li>
-							<h2>Comics</h2>
-						</li>
+						<NavLink to={'comics'} style={({ isActive }) => ({ color: isActive ? '#9F0013' : '' })}>
+							<li>
+								<h2>Comics</h2>
+							</li>
+						</NavLink>
 					</ul>
 				</nav>
 			</div>
