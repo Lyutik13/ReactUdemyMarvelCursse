@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 
 import Spinner from '../Spiner/Spinner'
 import ErrorMessage from '../ErrorMessage/ErrorMessage'
-import Skeleton from '../Skeleton/Skeleton'
 import useMarvelService from '../../services/MarvelService'
+import Skeleton from '../Skeleton/Skeleton'
 
 import styles from './CharInfo.module.scss'
 

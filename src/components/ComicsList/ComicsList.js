@@ -19,6 +19,7 @@ const ComicsList = () => {
 
 	useEffect(() => {
 		onReques(offset, true)
+    // eslint-disable-next-line
 	}, [])
 
 	const onReques = (offset, limit,  initial) => {
@@ -52,9 +53,9 @@ const ComicsList = () => {
 				imgStyle = { objectFit: 'unset' }
 			}
 
-      function randomPrise() {
-        return Math.floor(Math.random() * (20 - 5 + 1)) + 5
-      } 
+      // function randomPrise() {
+      //   return Math.floor(Math.random() * (20 - 5 + 1)) + 5
+      // } 
 
 			return (
 				<li className="comics__item" key={i}>
@@ -66,7 +67,7 @@ const ComicsList = () => {
 							style={imgStyle}
 						/>
 						<div className="comics__item-name">{item.name}</div>
-						<div className="comics__item-price">{randomPrise()}$</div>
+						<div className="comics__item-price">{item.price}</div>
 					</Link>
 				</li>
 			)
