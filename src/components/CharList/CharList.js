@@ -42,7 +42,7 @@ const CharList = (props) => {
 	// Этот метод создан для оптимизации,
 	// чтобы не помещать такую конструкцию в метод render
 	function renderItems(arr) {
-		const items = arr.map((item) => {
+		const items = arr.map((item, idx) => {
 			let imgStyle = { objectFit: 'cover' }
 			if (
 				item.thumbnail ===
@@ -55,7 +55,7 @@ const CharList = (props) => {
 				<li
 					className={styles.card}
 					tabIndex={0}
-					key={item.id}
+					key={idx}
 					onClick={() => {
 						props.onCharSelected(item.id)
 					}}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 import Spinner from '../Spiner/Spinner'
 import ErrorMessage from '../ErrorMessage/ErrorMessage'
@@ -17,7 +18,7 @@ const ComicsList = () => {
 	const { loading, error, getAllComics } = useMarvelService()
 
 	useEffect(() => {
-		// onReques(offset, true)
+		onReques(offset, true)
 	}, [])
 
 	const onReques = (offset, limit,  initial) => {
@@ -42,7 +43,7 @@ const ComicsList = () => {
 	// Этот метод создан для оптимизации,
 	// чтобы не помещать такую конструкцию в метод render
 	function renderItems(arr) {
-		const items = arr.map((item) => {
+		const items = arr.map((item, i) => {
 			let imgStyle = { objectFit: 'cover' }
 			if (
 				item.thumbnail ===
@@ -56,8 +57,8 @@ const ComicsList = () => {
       } 
 
 			return (
-				<li className="comics__item">
-					<a href="#">
+				<li className="comics__item" key={i}>
+					<Link to={`/comics/${item.id}`}>
 						<img
 							className="comics__item-img"
 							src={item.thumbnail}
@@ -66,7 +67,7 @@ const ComicsList = () => {
 						/>
 						<div className="comics__item-name">{item.name}</div>
 						<div className="comics__item-price">{randomPrise()}$</div>
-					</a>
+					</Link>
 				</li>
 			)
 		})
